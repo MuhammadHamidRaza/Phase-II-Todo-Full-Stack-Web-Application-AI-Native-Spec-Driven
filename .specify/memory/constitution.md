@@ -1,55 +1,112 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Todo Full-Stack Web Application Constitution
+<!-- Phase II — AI-Native, Spec-Driven Development -->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-First Development
+<!-- Every feature must have an approved specification before implementation -->
+No feature or code without an approved specification. All development follows the Spec-Kit Plus methodology with formal specs, plans, and task breakdowns.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. AI-Driven Implementation
+<!-- All code generated via Claude Code only -->
+All code generation and implementation must be done through Claude Code. No manual code editing outside of Claude Code's guidance and tools.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Consistency Across Stack
+<!-- Frontend, backend, and database follow unified standards -->
+Frontend, backend, and database layers must follow unified coding standards, naming conventions, and architectural patterns to ensure seamless integration.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Security by Default
+<!-- Authentication and authorization enforced everywhere -->
+Authentication and authorization mechanisms must be implemented and enforced at every layer of the application. No feature should be developed without considering security implications.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Scalability & Maintainability
+<!-- Code must support future phases (chatbot, agents) -->
+All code must be written with future extensibility in mind, supporting upcoming phases such as chatbot and agent implementations. Follow clean architecture principles.
 
-### [PRINCIPLE_6_NAME]
+### VI. Reproducibility
+<!-- Any developer or judge can run the project locally -->
+The project must be completely reproducible in any environment. All dependencies, configurations, and setup procedures must be documented and automated.
 
+## Technology Stack (Non-Negotiable)
 
-[PRINCIPLE__DESCRIPTION]
+### Frontend
+- Framework: Next.js 16+
+- Routing: App Router only
+- Language: TypeScript
+- Styling: Tailwind CSS
+- Auth Integration: Better Auth (frontend SDK)
+- API Access: Centralized API client (/lib/api.ts)
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### Backend
+- Framework: Python FastAPI
+- Language: Python 3.10+
+- API Style: REST (JSON only)
+- Auth Verification: JWT verification middleware
+- Config Management: Environment variables only
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Database & ORM
+- Database: Neon Serverless PostgreSQL
+- ORM: Prisma (TypeScript) for frontend, SQLAlchemy (Python) for backend
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Global Development Standards
+- All implementation must strictly follow approved specs
+- No direct code edits outside Claude Code
+- No skipping Spec-Kit phases
+- All changes must be traceable to a spec
+- Frontend and backend changes must remain consistent
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Security Standards
+- JWT token required for every API request
+- Missing/invalid token → 401 Unauthorized
+- User ID in JWT must match resource ownership
+- All database queries must filter by authenticated user
+- No cross-user data access under any condition
+
+## API Quality Standards
+- All routes under /api/
+- RESTful naming conventions
+- JSON request/response only
+- Proper HTTP status codes:
+  - 200 / 201 — Success
+  - 400 — Bad request
+  - 401 — Unauthorized
+  - 403 — Forbidden
+  - 404 — Not found
+  - 422 — Validation error
+  - 500 — Server error
+
+## Data Standards
+- Task entity must include:
+  - id
+  - user_id
+  - title
+  - description
+  - completed
+  - created_at
+  - updated_at
+- No orphaned tasks
+- Data must persist across restarts
+- Referential integrity enforced
+
+## Constraints
+- No alternative frameworks without spec update
+- No hardcoded secrets
+- No mock authentication
+- No shared user sessions between services
+- No undocumented behavior
+
+## Success Criteria
+- All 5 basic task features work end-to-end
+- Multi-user isolation verified
+- JWT enforced on every backend route
+- Neon PostgreSQL stores persistent data
+- Frontend is responsive on mobile & desktop
+- Project passes Phase II evaluation checklist
+- Clear AI-driven workflow visible in git history
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+The constitution supersedes all other development practices. Any amendments require formal documentation, approval process, and migration plan if applicable.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+All pull requests and reviews must verify compliance with these principles. Complexity must be justified with clear benefits. Use this document as the primary guidance for all development decisions.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-13 | **Last Amended**: 2025-12-13
