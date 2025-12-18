@@ -1,4 +1,4 @@
-# Claude Code Rules
+# Claude Code Rules - Todo Full-Stack Web Application
 
 This file is generated during init for the selected agent.
 
@@ -7,6 +7,9 @@ You are an expert AI assistant specializing in Spec-Driven Development (SDD). Yo
 ## Task context
 
 **Your Surface:** You operate on a project level, providing guidance to users and executing development tasks via a defined set of tools.
+
+**Project:** Todo Full-Stack Web Application
+**Objective:** Transform the console app into a modern multi-user web application with persistent storage using Claude Code and Spec-Kit Plus.
 
 **Your Success is Measured By:**
 - All outputs strictly follow the user intent.
@@ -113,7 +116,7 @@ You are not expected to solve every problem autonomously. You MUST invoke the us
 1.  **Ambiguous Requirements:** When user intent is unclear, ask 2-3 targeted clarifying questions before proceeding.
 2.  **Unforeseen Dependencies:** When discovering dependencies not mentioned in the spec, surface them and ask for prioritization.
 3.  **Architectural Uncertainty:** When multiple valid approaches exist with significant tradeoffs, present options and get user's preference.
-4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps. 
+4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps.
 
 ## Default policies (must follow)
 - Clarify and plan first - keep business understanding separate from technical plan and carefully architect and implement.
@@ -196,6 +199,10 @@ If ALL true, suggest:
 
 Wait for consent; never auto-create ADRs. Group related decisions (stacks, authentication, deployment) into one ADR when appropriate.
 
+## Project Overview
+
+This is a monorepo implementing a modern multi-user todo web application using Claude Code and Spec-Kit Plus for spec-driven development. The application follows the Agentic Dev Stack workflow: Write spec → Generate plan → Break into tasks → Implement via Claude Code.
+
 ## Basic Project Structure
 
 - `.specify/memory/constitution.md` — Project principles
@@ -205,6 +212,140 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 - `history/prompts/` — Prompt History Records
 - `history/adr/` — Architecture Decision Records
 - `.specify/` — SpecKit Plus templates and scripts
+- `frontend/` — Next.js 16+ application with CLAUDE.md guidelines
+- `backend/` — Python FastAPI server with CLAUDE.md guidelines
+- `docker-compose.yml` — Local development environment
+- `projectdetail.txt` — Project requirements and specifications
+
+## Development Workflow
+
+### 1. Reading Specifications
+- Always read relevant spec before implementing: `@specs/features/[feature].md`
+- Reference specs with: `@specs/features/task-crud.md`
+- Update specs if requirements change during development
+
+### 2. Cross-Stack Development
+1. Read spec: `@specs/features/[feature].md`
+2. Implement backend: Reference `@backend/CLAUDE.md` guidelines
+3. Implement frontend: Reference `@frontend/CLAUDE.md` guidelines
+4. Test and iterate with both components integrated
+
+### 3. Referencing Specifications in Claude Code
+- Implement features: `@specs/features/task-crud.md implement the create task feature`
+- Implement API: `@specs/api/rest-endpoints.md implement the GET /api/tasks endpoint`
+- Update database: `@specs/database/schema.md add due_date field to tasks`
+- Full feature across stack: `@specs/features/authentication.md implement Better Auth login`
+
+## Technology Stack
+
+### Frontend Stack
+- **Framework**: Next.js 16+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Authentication**: Better Auth with JWT plugin
+- **Package Manager**: npm or yarn
+
+### Backend Stack
+- **Framework**: Python FastAPI
+- **ORM**: SQLModel (SQLAlchemy + Pydantic)
+- **Database**: Neon Serverless PostgreSQL
+- **Authentication**: JWT tokens with python-jose
+- **Validation**: Pydantic v2
+
+### Architecture & Infrastructure
+- **Spec-Driven**: Claude Code + Spec-Kit Plus
+- **Authentication**: Better Auth + JWT integration
+- **Database**: Neon Serverless PostgreSQL
+- **Deployment**: Docker containerization
+
+## API Endpoints
+
+The application implements the following REST API endpoints with JWT authentication:
+
+- `GET    /api/{user_id}/tasks`                    - List all tasks for user
+- `POST   /api/{user_id}/tasks`                    - Create a new task
+- `GET    /api/{user_id}/tasks/{task_id}`          - Get specific task
+- `PUT    /api/{user_id}/tasks/{task_id}`          - Update a task
+- `DELETE /api/{user_id}/tasks/{task_id}`          - Delete a task
+- `PATCH  /api/{user_id}/tasks/{task_id}/complete` - Toggle completion status
+
+### API Security Implementation
+- All endpoints require JWT token in Authorization header: `Authorization: Bearer <token>`
+- User isolation: Each user only sees/modifies their own tasks
+- Task ownership is enforced on every operation
+- Requests without token receive 401 Unauthorized
+- JWT tokens are verified using shared BETTER_AUTH_SECRET
+
+## Database Schema
+
+### Tables
+- `users` (managed by Better Auth):
+  - id: string (primary key)
+  - email: string (unique)
+  - name: string
+  - created_at: timestamp
+
+- `tasks`:
+  - id: integer (primary key)
+  - user_id: string (foreign key → users.id)
+  - title: string (not null, 1-200 chars)
+  - description: text (nullable, max 1000 chars)
+  - completed: boolean (default false)
+  - priority: string enum (low, medium, high)
+  - due_date: datetime (nullable)
+  - created_at: timestamp
+  - updated_at: timestamp
+
+### Indexes
+- `tasks.user_id` (for filtering by user)
+- `tasks.completed` (for status filtering)
+- `tasks.due_date` (for date-based queries)
+
+## Authentication & Authorization Flow
+
+### How It Works
+1. User logs in on Frontend → Better Auth creates a session and issues a JWT token
+2. Frontend makes API call → Includes the JWT token in the Authorization: Bearer <token> header
+3. Backend receives request → Extracts token from header, verifies signature using shared secret
+4. Backend identifies user → Decodes token to get user ID, email, etc. and matches it with the user ID in the URL
+5. Backend filters data → Returns only tasks belonging to that user
+
+### Security Benefits
+- **User Isolation**: Each user only sees their own tasks
+- **Stateless Auth**: Backend doesn't need to call frontend to verify users
+- **Token Expiry**: JWTs expire automatically (e.g., after 7 days)
+- **No Shared DB Session**: Frontend and backend can verify auth independently
+
+## Running the Application
+
+### Development Commands
+- Frontend: `cd frontend && npm run dev`
+- Backend: `cd backend && uvicorn main:app --reload`
+- Both: `docker-compose up`
+
+### Environment Variables
+- `BETTER_AUTH_SECRET`: Shared secret for JWT signing/verification
+- `DATABASE_URL`: PostgreSQL connection string
+- `JWT_ALGORITHM`: Algorithm used for JWT signing (default: HS256)
+- `ACCESS_TOKEN_EXPIRE_MINUTES`: Token expiration time
+- `ENVIRONMENT`: Development/Production flag
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Key Benefits of This Structure
+
+### Single Context
+- Claude Code sees entire project, can make cross-cutting changes
+
+### Layered CLAUDE.md
+- Root file for overview, subfolder files for specific guidelines
+
+### Specs Folder
+- Reference specifications directly with `@specs/filename.md`
+
+### Clear Separation
+- Frontend and backend code in separate folders, easy to navigate
+
+## Architectural Decision Records (ADRs)
+When significant architectural decisions are made, document reasoning and tradeoffs by running: `/sp.adr <decision-title>`
